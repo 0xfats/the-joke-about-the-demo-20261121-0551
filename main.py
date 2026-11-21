@@ -18,9 +18,21 @@ JOKE = (
 )
 
 
+def _validate_joke(text: str) -> None:
+    """Gate check: the competition requires 1-280 Unicode code points,
+    and the entry must not be only whitespace."""
+    if not 1 <= len(text) <= 280:
+        raise ValueError(
+            f"joke must be 1-280 Unicode code points, got {len(text)}"
+        )
+    if not text.strip():
+        raise ValueError("joke must not be only whitespace")
+
+
 def main() -> None:
     output_dir = Path(os.environ.get("OUTPUT_DIR", "/output"))
     output_dir.mkdir(parents=True, exist_ok=True)
+    _validate_joke(JOKE)
     entry = output_dir / "entry.txt"
     entry.write_text(JOKE, encoding="utf-8")
     os.chmod(entry, 0o644)
